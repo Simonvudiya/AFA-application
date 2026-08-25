@@ -10,6 +10,9 @@ class UserCreate(UserBase):
 
 class UserOut(UserBase):
     id: int
+    directorate_id: int | None = None
+    department_id: int | None = None
+    border_point_id: int | None = None
 
     class Config:
         from_attributes = True

@@ -2,18 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.core.database import get_db
-from app.models.directorate import Department
-from app.models.crop import CropCategory
+from app.models.directorate import Department, Directorate
 
 router = APIRouter(prefix="/departments")
 
 @router.get("/")
 async def get_departments(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Department))
-    departments = result.scalars().all()
+    result = await db.execute(select(Department, Directorate).join(Directorate))
+    rows = result.all()
     return [
-        {"id": d.id, "name": d.name, "directorate_id": d.directorate_id}
-        for d in departments
+        {"id": d.id, "name": d.name, "directorate_id": d.directorate_id, "directorate_name": dir.name}
+        for d, dir in rows
     ]
 
 @router.post("/")

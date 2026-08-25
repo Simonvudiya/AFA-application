@@ -48,4 +48,4 @@ async def get_me(
     user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return UserOut(id=user.id, email=user.email, full_name=user.full_name, role=user.role)
+    return UserOut(id=user.id, email=user.email, full_name=user.full_name, role=user.role, directorate_id=user.directorate_id, department_id=user.department_id, border_point_id=user.border_point_id)

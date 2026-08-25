@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../../api/client';
 
 interface Directorate {
@@ -32,10 +33,16 @@ export const Directorates: React.FC = () => {
         <button type="submit" className="bg-blue-600 text-white px-3 py-2 rounded">Add</button>
       </form>
       <table className="w-full border">
-        <thead><tr className="bg-gray-100"><th className="border p-2">Name</th><th className="border p-2">Code</th></tr></thead>
+        <thead><tr className="bg-gray-100"><th className="border p-2">Name</th><th className="border p-2">Code</th><th className="border p-2">Actions</th></tr></thead>
         <tbody>
           {items.map(item => (
-            <tr key={item.id}><td className="border p-2">{item.name}</td><td className="border p-2">{item.code}</td></tr>
+            <tr key={item.id}>
+              <td className="border p-2">{item.name}</td>
+              <td className="border p-2">{item.code}</td>
+              <td className="border p-2">
+                <Link to={`/my-records?directorate_id=${item.id}`} className="text-blue-600 hover:underline">View Records</Link>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
