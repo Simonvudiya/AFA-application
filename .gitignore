@@ -9,3 +9,7 @@ build/
 *.log
 .DS_Store
 pgdata/
+*.db
+test_server.py
+run_server.py
+quick_test.py

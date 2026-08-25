@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export const Login: React.FC = () => {
   const { login, isLoading } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('admin@afa.go.ke');
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
@@ -12,6 +14,7 @@ export const Login: React.FC = () => {
     setError('');
     try {
       await login(email, password);
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err?.response?.data?.detail || 'Login failed');
     }

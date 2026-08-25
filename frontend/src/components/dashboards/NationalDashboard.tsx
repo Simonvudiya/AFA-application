@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../../api/client';
 import { BarChart } from '../charts/BarChart';
 import { KenyaBorderMap } from '../maps/KenyaBorderMap';
@@ -18,7 +19,7 @@ export const NationalDashboard: React.FC = () => {
 
   useEffect(() => {
     api.get('/reports/national/summary').then(res => setSummary(res.data));
-    api.get('/analytics/directorate-volumes').then(res => setDirectorateData(res.data));
+    api.get('/analytics/directorate-volumes').then(res => setDirectorateData(res.data.value || []));
   }, []);
 
   if (!summary) return <div>Loading...</div>;
@@ -26,22 +27,22 @@ export const NationalDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded shadow">
+        <Link to="/reports" className="bg-white p-4 rounded shadow hover:shadow-lg transition">
           <h3>Total Transactions</h3>
           <p className="text-2xl font-bold">{summary.totalTransactions}</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
+        </Link>
+        <Link to="/reports" className="bg-white p-4 rounded shadow hover:shadow-lg transition">
           <h3>Total Crop Volume</h3>
           <p className="text-2xl font-bold">{summary.totalVolume} MT</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
+        </Link>
+        <Link to="/reports" className="bg-white p-4 rounded shadow hover:shadow-lg transition">
           <h3>Imports</h3>
           <p className="text-2xl font-bold">{summary.imports} MT</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
+        </Link>
+        <Link to="/reports" className="bg-white p-4 rounded shadow hover:shadow-lg transition">
           <h3>Exports</h3>
           <p className="text-2xl font-bold">{summary.exports} MT</p>
-        </div>
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-6">
