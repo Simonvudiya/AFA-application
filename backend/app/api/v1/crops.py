@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.core.database import get_db
 from app.models.crop import CropCategory, Crop, CropProduct
+from app.models.directorate import Directorate, Department
 
 router = APIRouter(prefix="/crops")
 
@@ -20,7 +21,14 @@ async def get_crops(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Crop))
     crops = result.scalars().all()
     return [
-        {"id": crop.id, "name": crop.name, "category_id": crop.category_id, "scientific_name": crop.scientific_name}
+        {
+            "id": crop.id,
+            "name": crop.name,
+            "category_id": crop.category_id,
+            "scientific_name": crop.scientific_name,
+            "directorate_name": None,
+            "department_name": None,
+        }
         for crop in crops
     ]
 

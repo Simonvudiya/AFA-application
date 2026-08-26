@@ -6,6 +6,7 @@ import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { NewConsignment } from './pages/NewConsignment';
 import { MyRecords } from './pages/MyRecords';
+import { ConsignmentDetail } from './pages/ConsignmentDetail';
 import { Reports } from './pages/Reports';
 import { Analytics } from './pages/Analytics';
 import { Admin } from './pages/Admin';
@@ -34,6 +35,7 @@ const AppRoutes: React.FC = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="new-consignment" element={<NewConsignment />} />
         <Route path="my-records" element={<MyRecords />} />
+        <Route path="consignments/:id" element={<ConsignmentDetail />} />
         <Route path="reports" element={<Reports />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="admin" element={<Admin />}>

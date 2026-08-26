@@ -10,8 +10,8 @@ interface BorderPoint {
 }
 
 interface BorderPointSelectorProps {
-  value?: BorderPoint;
-  onChange?: (bp: BorderPoint) => void;
+  value?: number;
+  onChange?: (bpId: number) => void;
   disabled?: boolean;
 }
 
@@ -23,18 +23,22 @@ export const BorderPointSelector: React.FC<BorderPointSelectorProps> = ({ value,
   }, []);
 
   return (
-    <select
-      disabled={disabled}
-      value={value?.id || ''}
-      onChange={(e) => {
-        const bp = points.find((p) => p.id === Number(e.target.value));
-        onChange?.(bp!);
-      }}
-    >
-      <option value="">Select border point</option>
-      {points.map((bp) => (
-        <option key={bp.id} value={bp.id}>{bp.name} ({bp.code})</option>
-      ))}
-    </select>
+    <div>
+      <label className="block text-sm font-medium">Border Point</label>
+      <select
+        disabled={disabled}
+        value={value || ''}
+        onChange={(e) => {
+          const bpId = Number(e.target.value);
+          if (bpId) onChange?.(bpId);
+        }}
+        className="mt-1 w-full border rounded p-2"
+      >
+        <option value="">Select border point</option>
+        {points.map((bp) => (
+          <option key={bp.id} value={bp.id}>{bp.name} ({bp.code}) - {bp.county}</option>
+        ))}
+      </select>
+    </div>
   );
 };

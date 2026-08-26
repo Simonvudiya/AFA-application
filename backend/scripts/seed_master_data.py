@@ -22,34 +22,34 @@ SEED_CATEGORIES = [
 ]
 
 SEED_CROPS = [
-    {"name": "Maize", "category": "Cereals"},
-    {"name": "Wheat", "category": "Cereals"},
-    {"name": "Beans", "category": "Legumes"},
-    {"name": "Coffee", "category": "Industrial Crops"},
-    {"name": "Tea", "category": "Industrial Crops"},
-    {"name": "Sugarcane", "category": "Industrial Crops"},
-    {"name": "Cotton", "category": "Industrial Crops"},
-    {"name": "Sisal", "category": "Industrial Crops"},
-    {"name": "Pyrethrum", "category": "Industrial Crops"},
-    {"name": "Miraa", "category": "Industrial Crops"},
-    {"name": "Horticultural crops", "category": "Horticulture"},
-    {"name": "Food crops", "category": "Cereals"},
-    {"name": "Nuts and oil crops", "category": "Nuts & Oil Crops"},
-    {"name": "Coconut", "category": "Nuts & Oil Crops"},
-    {"name": "Macadamia", "category": "Nuts & Oil Crops"},
-    {"name": "Cashew nuts", "category": "Nuts & Oil Crops"},
-    {"name": "Avocado", "category": "Horticulture"},
-    {"name": "Mango", "category": "Horticulture"},
-    {"name": "Banana", "category": "Horticulture"},
-    {"name": "Passion fruit", "category": "Horticulture"},
-    {"name": "French beans", "category": "Horticulture"},
-    {"name": "Peas", "category": "Horticulture"},
-    {"name": "Onions", "category": "Horticulture"},
-    {"name": "Potatoes", "category": "Horticulture"},
-    {"name": "Rice", "category": "Cereals"},
-    {"name": "Sorghum", "category": "Cereals"},
-    {"name": "Millets", "category": "Cereals"},
-    {"name": "Beans and other pulses", "category": "Legumes"},
+    {"name": "Maize", "category": "Cereals", "directorate_code": "FDC", "department_name": "Crop Development Department"},
+    {"name": "Wheat", "category": "Cereals", "directorate_code": "FDC", "department_name": "Crop Development Department"},
+    {"name": "Beans", "category": "Legumes", "directorate_code": "FDC", "department_name": "Crop Development Department"},
+    {"name": "Coffee", "category": "Industrial Crops", "directorate_code": "COF", "department_name": "Crop Development Department"},
+    {"name": "Tea", "category": "Industrial Crops", "directorate_code": "OTH", "department_name": "Crop Development Department"},
+    {"name": "Sugarcane", "category": "Industrial Crops", "directorate_code": "SUG", "department_name": "Crop Development Department"},
+    {"name": "Cotton", "category": "Industrial Crops", "directorate_code": "FBR", "department_name": "Crop Development Department"},
+    {"name": "Sisal", "category": "Industrial Crops", "directorate_code": "FBR", "department_name": "Crop Development Department"},
+    {"name": "Pyrethrum", "category": "Industrial Crops", "directorate_code": "OTH", "department_name": "Crop Development Department"},
+    {"name": "Miraa", "category": "Industrial Crops", "directorate_code": "OTH", "department_name": "Crop Development Department"},
+    {"name": "Horticultural crops", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Food crops", "category": "Cereals", "directorate_code": "FDC", "department_name": "Crop Development Department"},
+    {"name": "Nuts and oil crops", "category": "Nuts & Oil Crops", "directorate_code": "NOC", "department_name": "Crop Development Department"},
+    {"name": "Coconut", "category": "Nuts & Oil Crops", "directorate_code": "NOC", "department_name": "Crop Development Department"},
+    {"name": "Macadamia", "category": "Nuts & Oil Crops", "directorate_code": "NOC", "department_name": "Crop Development Department"},
+    {"name": "Cashew nuts", "category": "Nuts & Oil Crops", "directorate_code": "NOC", "department_name": "Crop Development Department"},
+    {"name": "Avocado", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Mango", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Banana", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Passion fruit", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "French beans", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Peas", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Onions", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Potatoes", "category": "Horticulture", "directorate_code": "HOR", "department_name": "Crop Development Department"},
+    {"name": "Rice", "category": "Cereals", "directorate_code": "FDC", "department_name": "Crop Development Department"},
+    {"name": "Sorghum", "category": "Cereals", "directorate_code": "FDC", "department_name": "Crop Development Department"},
+    {"name": "Millets", "category": "Cereals", "directorate_code": "FDC", "department_name": "Crop Development Department"},
+    {"name": "Beans and other pulses", "category": "Legumes", "directorate_code": "FDC", "department_name": "Crop Development Department"},
 ]
 
 SEED_PRODUCTS = [
@@ -98,6 +98,8 @@ SEED_BORDER_POINT_DIRECTORATES = {
 }
 
 async def seed():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     async with AsyncSessionLocal() as session:
         for d in SEED_DIRECTORATES:
             existing = await session.execute(select(Directorate).where(Directorate.code == d["code"]))
@@ -175,10 +177,30 @@ async def seed():
                     name=crop_data["name"],
                     category_id=category_map[crop_data["category"]],
                     scientific_name=crop_data.get("scientific_name"),
+                    directorate_id=directorate_map.get(crop_data.get("directorate_code")),
+                    department_id=None,
                 )
                 session.add(crop)
                 await session.flush()
             crop_map[crop.name] = crop.id
+        
+        if "departments" in [t.name for t in Base.metadata.tables.values()]:
+            for crop_data in SEED_CROPS:
+                if not crop_data.get("directorate_code") or not crop_data.get("department_name"):
+                    continue
+                existing_crop = await session.execute(select(Crop).where(Crop.name == crop_data["name"]))
+                crop = existing_crop.scalar_one_or_none()
+                if not crop:
+                    continue
+                dir_id = directorate_map.get(crop_data["directorate_code"])
+                if not dir_id:
+                    continue
+                dept_result = await session.execute(select(Department).where(Department.name == crop_data["department_name"], Department.directorate_id == dir_id))
+                dept = dept_result.scalar_one_or_none()
+                if dept:
+                    crop.directorate_id = dept.directorate_id
+                    crop.department_id = dept.id
+                    session.add(crop)
         
         for prod_data in SEED_PRODUCTS:
             existing_prod = await session.execute(select(CropProduct).where(CropProduct.name == prod_data["name"]))

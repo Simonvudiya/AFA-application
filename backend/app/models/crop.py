@@ -21,6 +21,8 @@ class Crop(Base):
     scientific_name = Column(String(120))
     hs_code = Column(String(20))
     default_bag_weight_kg = Column(Float, nullable=True)
+    directorate_id = Column(Integer, ForeignKey("directorates.id"), nullable=True)
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
     is_active = Column(Integer, default=1)
     created_at = Column(DateTime, default=func.now())
 
